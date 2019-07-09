@@ -33,6 +33,10 @@ public class Imputacion implements Serializable,Cloneable {
      */
     private List<String> diasExcluidos;
     private int intervaloVariableMinutos;
+    /**
+     * (normal | diaria)
+     */
+    private String tipo;
 
     public Imputacion() {
         super();
@@ -82,56 +86,49 @@ public class Imputacion implements Serializable,Cloneable {
     public String getDiaInicio() {
         return diaInicio;
     }
-
     public void setDiaInicio(String diaInicio) {
         this.diaInicio = diaInicio;
     }
-
     public String getDiaFin() {
         return diaFin;
     }
-
     public void setDiaFin(String diaFin) {
         this.diaFin = diaFin;
     }
-
     public String getHoraEntrada() {
         return horaEntrada;
     }
-
     public void setHoraEntrada(String horaEntrada) {
         this.horaEntrada = horaEntrada;
     }
-
     public String getHoraSalida() {
         return horaSalida;
     }
-
     public void setHoraSalida(String horaSalida) {
         this.horaSalida = horaSalida;
     }
-
     public String getHorasEfectivas() {
         return horasEfectivas;
     }
-
     public void setHorasEfectivas(String horasEfectivas) {
         this.horasEfectivas = horasEfectivas;
     }
-
     public int getIntervaloVariableMinutos() {
         return intervaloVariableMinutos;
     }
-
     public void setIntervaloVariableMinutos(int intervaloVariableMinutos) {
         this.intervaloVariableMinutos = intervaloVariableMinutos;
     }
-
     public List<String> getDiasExcluidos() {
         return diasExcluidos;
     }
-
     public void setDiasExcluidos(List<String> diasExcluidos) {
         this.diasExcluidos = diasExcluidos;
+    }
+    public String getTipo() {
+        return tipo;
+    }
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

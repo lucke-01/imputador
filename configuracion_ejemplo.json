@@ -1,0 +1,30 @@
+{
+    "_observaciones": [
+		"Formato de fechas: yyyy-MM-dd, siempre debe haber dos numeros en mes y dia",
+		"Formato de horas: HH:mm formato 24 horas siempre dos digitos",
+		"Dejar los [] vacios si no quieres poner nada",
+		"No poner numeros negativos",
+		"No dejar ningun campo con solo comillas"
+	],
+    "dominio": "alfatecsistemas.es",
+    "usuario": "",
+    "password": "",
+    "imputaciones": [{
+			"tipo": "normal",
+            "diaInicio": "2019-07-03",
+            "diaFin": "2019-07-03",
+            "horaEntrada": "08:00",
+            "horaSalida": "15:00",
+            "horasEfectivas": "07:00",
+            "intervaloVariableMinutos": 0,
+            "diasExcluidos": []
+        }
+		,{
+			"tipo": "diaria",
+            "horaEntrada": "08:00",
+            "horaSalida": "15:00",
+            "horasEfectivas": "07:00",
+            "intervaloVariableMinutos": 0
+        }
+    ]
+}

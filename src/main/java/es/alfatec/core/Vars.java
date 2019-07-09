@@ -4,6 +4,12 @@ public class Vars {
     public static final class Constantes {
         public static final String NOMBRE_FICHERO_CONFIGURACION = "configuracion.json";
     }
+    public static final class Configuracion {
+        public static final class Imputacion {
+            public static final String TIPO_NORMAL = "normal";
+            public static final String TIPO_DIARIA = "diaria";
+        }
+    }
     public static final class WebFuifi {
 
         public static final class API {

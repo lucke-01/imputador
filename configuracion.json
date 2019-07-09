@@ -1,0 +1,16 @@
+{
+    "_observaciones": "Formato de fechas: yyyy-MM-dd, siempre debe haber dos numeros en mes y dia; formato de horas: HH:mm formato 24 horas siempre dos digitos",
+    "dominio": "",
+    "usuario": "",
+    "password": "",
+    "imputaciones": [{
+            "diaInicio": "2019-07-03",
+            "diaFin": "2019-07-03",
+            "horaEntrada": "08:00",
+            "horaSalida": "15:00",
+            "horasEfectivas": "07:00",
+            "intervaloVariableMinutos": 0,
+            "diasExcluidos": []
+        }
+    ]
+}

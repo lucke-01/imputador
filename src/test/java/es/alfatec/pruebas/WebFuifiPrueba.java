@@ -1,5 +1,4 @@
-package es.alfatec.web;
-
+package es.alfatec.pruebas;
 import es.alfatec.core.Vars;
 import es.alfatec.domain.Configuracion;
 import es.alfatec.domain.Imputacion;
@@ -25,31 +24,25 @@ import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class WebFuifi {
+public class WebFuifiPrueba {
 
     private static final Logger log = LogManager.getLogger();
 
     private AuthorizationTokenResponse authToken;
-    private Configuracion config;
-    private CloseableHttpClient clientHttp;
-    private FileWriter ficheroImputaciones;
-    
+    private Configuracion config;    
 
-    public WebFuifi() {
-        this(null,null);
+    public WebFuifiPrueba() {
+        this(null);
     }
 
-    public WebFuifi(Configuracion config,FileWriter ficheroImputaciones) {
+    public WebFuifiPrueba(Configuracion config) {
         this.config = config;
-        this.ficheroImputaciones = ficheroImputaciones;
-        clientHttp = HttpClients.createDefault();
     }
 
     public void iniciaFichaje() throws UnsupportedEncodingException, IOException {
         this.login();
         //esperamos un X Tiempo
         log.info("Login realizado esperando 5 segundos");
-        Tiempo.sleep(Tiempo.segundosToMilesimas(5));
         this.fichaImputaciones();
     }
 
@@ -63,13 +56,8 @@ public class WebFuifi {
         httpPost.setHeader("Accept", "application/json");
         httpPost.setHeader("Content-type", "application/json");
         httpPost.setEntity(loginPostEntity);
+        log.info("request login post: "+loginPostEntity);
         //respuesta
-        CloseableHttpResponse responseLogin = clientHttp.execute(httpPost);
-
-        String respuestaLoginBody = EntityUtils.toString(responseLogin.getEntity());
-
-        log.info("respuesta login completa: "+respuestaLoginBody);
-        this.authToken = GsonUtils.gson.fromJson(respuestaLoginBody, AuthorizationTokenResponse.class);
     }
 
     public void fichaImputaciones() throws UnsupportedEncodingException, IOException {
@@ -109,7 +97,6 @@ public class WebFuifi {
                     int tiempoEsperarMilesimas = config.calculaTiempoMilesimasEsperarImputacion();
                     //esperamos un X Tiempo
                     log.info("Tiempo antes de imputacion: " + Tiempo.milesismasToSegundos(tiempoEsperarMilesimas) + " segundos.");
-                    Tiempo.sleep(tiempoEsperarMilesimas);
                     imputacionPost.setDate(Tiempo.localDateToCadenaFecha(imputacionDiaInicio));
 
                     //copiamos imputacion, modificamos sus horas y las pasamos como parametro
@@ -126,23 +113,8 @@ public class WebFuifi {
                     httpPost.setHeader("Accept", "application/json");
                     httpPost.setHeader("Content-type", "application/json");
                     //usamos el token para autentificarnos
-                    httpPost.setHeader("Authorization", authToken.tokenFormatoHeader());
                     httpPost.setEntity(imputacionPostEntity);
-                    //respuesta
-                    CloseableHttpResponse responseImputacionPost = clientHttp.execute(httpPost);
-                    String respuestaImputacionPost = EntityUtils.toString(responseImputacionPost.getEntity());
-                    ImputacionResponse imputacionResponse = GsonUtils.gson.fromJson(respuestaImputacionPost, ImputacionResponse.class);
-                    log.info("Respuesta completa imputacion ["+imputacionDiaInicio+"]: "+respuestaImputacionPost);
-                    //si la imputacion se realiza correctamente
-                    if (Vars.Http.STATUS_CODE.SUCCESS == imputacionResponse.getStatusCode()) {
-                        String mensajeImputacion = "imputacion ["+imputacion.getTipo()+"]: " + imputacionPostString+";Mensaje: "+imputacionResponse.getMessage();
-                        ficheroImputaciones.write(mensajeImputacion);
-                        log.info(mensajeImputacion);
-                    } else {
-                        String mensajeImputacion = "imputacion ["+imputacion.getTipo()+"] rechazada: ["+imputacionDiaInicio+"]; Mensaje: "+imputacionResponse.getMessage();
-                        log.warn(mensajeImputacion);
-                        ficheroImputaciones.write(mensajeImputacion);
-                    }
+                    log.info("request imputacion post: "+imputacionPostString);
                 } else {
                     log.info("Omitiendo Dia finde semana: [" + imputacionDiaInicio + "]");
                 }

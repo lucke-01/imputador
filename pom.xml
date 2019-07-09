@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>alfatec.es</groupId>
     <artifactId>fuifi-fichaje-java</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
     <name>Fuifi Imputador</name>
     <properties>
@@ -67,11 +67,30 @@
                                 <resource>
                                     <directory>${basedir}</directory>
                                     <includes>
-                                        <include>configuracion.json</include>
+                                        <include>configuracion_ejemplo.json</include>
                                         <include>fuifi-fichaje.bat</include>
                                     </includes>
                                 </resource>
                             </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- renombrado de ficheros target -->
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
+                    <execution>
+                        <id>rename-file</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>rename</goal>
+                        </goals>
+                        <configuration>
+                            <sourceFile>${basedir}/target/configuracion_ejemplo.json</sourceFile>
+                            <destinationFile>${basedir}/target/configuracion.json</destinationFile>
                         </configuration>
                     </execution>
                 </executions>

@@ -4,7 +4,7 @@
 * tipo normal: selcciona un rango de fechas para imputar (necesita rangos de fecha)
 * tipo diaria: imputa el dia actual (no necesita rangos de fecha)
 * tipo semanal: imputa desde el lunes de la semana hasta el dia actual (no necesita rangos de fecha)
-* tipo semanal: imputa desde el primer dia del mes hasta el dia actual (no necesita rangos de fecha)
+* tipo mensual: imputa desde el primer dia del mes hasta el dia actual (no necesita rangos de fecha)
 
 ## Formato fechas
 Las fechas deberán ir en formato americano con separador '-'. Y con los digitos faltantes a 0.
@@ -22,9 +22,10 @@ Ejemplo: ["2019-01-01",2019-01-03]
 Conjunto de nombre de días en formato español y en minúscula que serán excluidos del fichaje:
 Ejemplo: ["lunes","jueves"]
 
-## intervalo de minutos
+## intervalo variable de minutos
 Número de minutos variable, que modificará aleatoriamente las horas de entrada y salida.
 Si no se desea dejar a 0.
+como: (07:55 - 18:10),(08:04 - 18:19) etc...
 
 ## Fines de semana
 La aplicación NUNCA imputará en fin de semana.

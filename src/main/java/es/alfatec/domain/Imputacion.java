@@ -32,6 +32,10 @@ public class Imputacion implements Serializable,Cloneable {
      * Formato YYYY-MM-DD
      */
     private List<String> diasExcluidos;
+    /**
+     * Formato lunes,martes,miercoles,jueves,viernes,sabado,domingo
+     */
+    private List<String> diasSemanaExcluidos;
     private int intervaloVariableMinutos;
     /**
      * (normal | diaria)
@@ -130,5 +134,11 @@ public class Imputacion implements Serializable,Cloneable {
     }
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+    public List<String> getDiasSemanaExcluidos() {
+        return diasSemanaExcluidos;
+    }
+    public void setDiasSemanaExcluidos(List<String> diasSemanaExcluidos) {
+        this.diasSemanaExcluidos = diasSemanaExcluidos;
     }
 }

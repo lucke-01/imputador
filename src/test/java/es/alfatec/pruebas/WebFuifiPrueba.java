@@ -63,7 +63,9 @@ public class WebFuifiPrueba {
     public void fichaImputaciones() throws UnsupportedEncodingException, IOException {
         //Imputaciones
         for (Imputacion imputacion : this.config.getImputaciones()) {
+            log.info("iniciando imputacion");
             this.fichaImputacion(imputacion);
+            log.info("terminada imputacion");
         }
     }
     
@@ -71,13 +73,21 @@ public class WebFuifiPrueba {
         LocalDate imputacionDiaInicio = null;
         LocalDate imputacionDiaFin = null;
         final List<LocalDate> diasExcluidosLocalDate;
+        diasExcluidosLocalDate = imputacion.getDiasExcluidos() != null
+                ? imputacion.getDiasExcluidos().stream().map(diaCad -> Tiempo.cadenaFechaToLocalDate(diaCad)).collect(Collectors.toList()) : new ArrayList<>();
+        imputacion.setDiasSemanaExcluidos(imputacion.getDiasSemanaExcluidos() != null ? imputacion.getDiasSemanaExcluidos() : new ArrayList<>());
+
         if (Vars.Configuracion.Imputacion.TIPO_NORMAL.equals(imputacion.getTipo())) {
-            diasExcluidosLocalDate = imputacion.getDiasExcluidos().stream().map(diaCad -> Tiempo.cadenaFechaToLocalDate(diaCad)).collect(Collectors.toList());
             imputacionDiaInicio = Tiempo.cadenaFechaToLocalDate(imputacion.getDiaInicio());
             imputacionDiaFin = Tiempo.cadenaFechaToLocalDate(imputacion.getDiaFin());
         } else if (Vars.Configuracion.Imputacion.TIPO_DIARIA.equals(imputacion.getTipo())) {
-            diasExcluidosLocalDate = new ArrayList<>();
             imputacionDiaInicio = LocalDate.now();
+            imputacionDiaFin = LocalDate.now();
+        } else if (Vars.Configuracion.Imputacion.TIPO_SEMANAL.equals(imputacion.getTipo())) {
+            imputacionDiaInicio = Tiempo.getNowFirstDayOfWeek();
+            imputacionDiaFin = LocalDate.now();
+        } else if(Vars.Configuracion.Imputacion.TIPO_MENSUAL.equals(imputacion.getTipo())) {
+            imputacionDiaInicio = Tiempo.getNowFirstDayOfMonth();
             imputacionDiaFin = LocalDate.now();
         } else {
             log.error("Imputacion sin tipo");
@@ -86,7 +96,7 @@ public class WebFuifiPrueba {
         }
         //incluimos el dia final
         imputacionDiaFin = imputacionDiaFin.plusDays(1);
-        
+
         ImputacionPost imputacionPost = new ImputacionPost();
         imputacionPost.setEffectiveTime(imputacion.getHorasEfectivas());
         while (!imputacionDiaInicio.equals(imputacionDiaFin)) {
@@ -94,27 +104,31 @@ public class WebFuifiPrueba {
             if (!diasExcluidosLocalDate.contains(imputacionDiaInicio)) {
                 //si es finde semana no incluimos imputacion
                 if (!Tiempo.isWeekend(imputacionDiaInicio)) {
-                    int tiempoEsperarMilesimas = config.calculaTiempoMilesimasEsperarImputacion();
-                    //esperamos un X Tiempo
-                    log.info("Tiempo antes de imputacion: " + Tiempo.milesismasToSegundos(tiempoEsperarMilesimas) + " segundos.");
-                    imputacionPost.setDate(Tiempo.localDateToCadenaFecha(imputacionDiaInicio));
+                    if (!imputacion.getDiasSemanaExcluidos().contains(Tiempo.getDiaSemanaFromLocalDate(imputacionDiaInicio))) {
+                        int tiempoEsperarMilesimas = config.calculaTiempoMilesimasEsperarImputacion();
+                        //esperamos un X Tiempo
+                        log.info("Tiempo antes de imputacion: " + Tiempo.milesismasToSegundos(tiempoEsperarMilesimas) + " segundos.");
+                        Tiempo.sleep(tiempoEsperarMilesimas);
+                        imputacionPost.setDate(Tiempo.localDateToCadenaFecha(imputacionDiaInicio));
 
-                    //copiamos imputacion, modificamos sus horas y las pasamos como parametro
-                    Imputacion imputacionCalcular = imputacion.clone();
-                    imputacionCalcular.cambiaHoraEntradaYSalidaConIntervaloVariable();
-                    imputacionPost.setTimeFrom(imputacionCalcular.getHoraEntrada());
-                    imputacionPost.setTimeTo(imputacionCalcular.getHoraSalida());
+                        //copiamos imputacion, modificamos sus horas y las pasamos como parametro
+                        Imputacion imputacionCalcular = imputacion.clone();
+                        imputacionCalcular.cambiaHoraEntradaYSalidaConIntervaloVariable();
+                        imputacionPost.setTimeFrom(imputacionCalcular.getHoraEntrada());
+                        imputacionPost.setTimeTo(imputacionCalcular.getHoraSalida());
 
-                    String imputacionPostString = GsonUtils.gson.toJson(imputacionPost);
-                    
-                    StringEntity imputacionPostEntity = new StringEntity(imputacionPostString);
-                    
-                    HttpPost httpPost = new HttpPost(Vars.WebFuifi.API.INPUT_DIAS_URL);
-                    httpPost.setHeader("Accept", "application/json");
-                    httpPost.setHeader("Content-type", "application/json");
-                    //usamos el token para autentificarnos
-                    httpPost.setEntity(imputacionPostEntity);
-                    log.info("request imputacion post: "+imputacionPostString);
+                        String imputacionPostString = GsonUtils.gson.toJson(imputacionPost);
+                        log.info("imputacionPOST: "+imputacionPostString);
+                        StringEntity imputacionPostEntity = new StringEntity(imputacionPostString);
+
+                        HttpPost httpPost = new HttpPost(Vars.WebFuifi.API.INPUT_DIAS_URL);
+                        httpPost.setHeader("Accept", "application/json");
+                        httpPost.setHeader("Content-type", "application/json");
+                        //usamos el token para autentificarnos
+                        httpPost.setEntity(imputacionPostEntity);
+                    } else {
+                        log.info("Omitiendo Dia de semana: ["+Tiempo.getDiaSemanaFromLocalDate(imputacionDiaInicio)+"] dia: [" + imputacionDiaInicio + "]");
+                    }
                 } else {
                     log.info("Omitiendo Dia finde semana: [" + imputacionDiaInicio + "]");
                 }

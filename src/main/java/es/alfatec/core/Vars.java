@@ -8,6 +8,8 @@ public class Vars {
         public static final class Imputacion {
             public static final String TIPO_NORMAL = "normal";
             public static final String TIPO_DIARIA = "diaria";
+            public static final String TIPO_SEMANAL = "semanal";
+            public static final String TIPO_MENSUAL = "mensual";
         }
     }
     public static final class WebFuifi {

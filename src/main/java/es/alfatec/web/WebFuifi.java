@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -49,6 +50,7 @@ public class WebFuifi {
         //esperamos un X Tiempo
         log.info("Login realizado esperando 5 segundos");
         Tiempo.sleep(Tiempo.segundosToMilesimas(5));
+        this.firstLogin();
         this.fichaImputaciones();
     }
 
@@ -69,6 +71,20 @@ public class WebFuifi {
 
         log.info("respuesta login completa: " + respuestaLoginBody);
         this.authToken = GsonUtils.gson.fromJson(respuestaLoginBody, AuthorizationTokenResponse.class);
+    }
+    public void firstLogin() throws IOException {
+        HttpGet firstLoginGet = new HttpGet(Vars.WebFuifi.API.FIRST_LOGIN_URL);
+        firstLoginGet.setHeader("Authorization", authToken.tokenFormatoHeader());
+
+        CloseableHttpResponse responseFirstLogin = clientHttp.execute(firstLoginGet);
+        String responseFirstLoginCadena = EntityUtils.toString(responseFirstLogin.getEntity());
+
+        if(Vars.Http.STATUS_CODE.SUCCESS == responseFirstLogin.getStatusLine().getStatusCode()) {
+            log.info("Primer login OK:");
+        } else {
+            log.error("Primer login FAIL: "+responseFirstLoginCadena);
+            throw new IllegalArgumentException("Fallo en FirstLogin:\n"+responseFirstLoginCadena);
+        }
     }
 
     public void fichaImputaciones() throws UnsupportedEncodingException, IOException {

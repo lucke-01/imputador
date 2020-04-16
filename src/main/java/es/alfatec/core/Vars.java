@@ -17,6 +17,7 @@ public class Vars {
         public static final class API {
 
             public static final String LOGIN_URL = "https://api.fuifi.com/api/v1/login";
+            public static final String FIRST_LOGIN_URL = "https://api.fuifi.com/api/v1/user/firstLoginToday";
             public static final String INPUT_DIAS_URL = "https://api.fuifi.com/api/v1/workdayrecord/store/lazy";
         }
     }

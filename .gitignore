@@ -1,3 +1,5 @@
 /target
 /logs
-configuracion.json
+/configuracion.json
+.idea
+fuifi-fichaje-java.iml

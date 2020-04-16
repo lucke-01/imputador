@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>alfatec.es</groupId>
     <artifactId>fuifi-fichaje-java</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1.RELEASE</version>
     <packaging>jar</packaging>
     <name>Fuifi Imputador</name>
     <properties>

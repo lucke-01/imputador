@@ -108,6 +108,9 @@
                         <configuration>
                             <finalName>fuifi-fichaje</finalName>
                             <archive>
+                                <manifestEntries>
+                                  <Multi-Release>true</Multi-Release>
+                                </manifestEntries>
                                 <manifest>
                                     <mainClass>
                                         es.alfatec.main.Main
